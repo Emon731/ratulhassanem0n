@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Ratul Hassan Emon</title>
+        <link rel="icon" type="image/png" href="ikn.png">
+
+    <script>
+        if (!localStorage.getItem('token')) {
+            window.location.href = "index.html";
+        }
+    </script>
+    <style>
+        body { background: #0a0f14; color: white; font-family: sans-serif; padding: 50px; text-align: center; }
+        .card { background: #161e26; padding: 40px; border-radius: 20px; border: 1px solid #10b981; display: inline-block; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Welcome to your Dashboard!</h1>
+        <p>!!!Your dashboard is under construction!!!</p>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
