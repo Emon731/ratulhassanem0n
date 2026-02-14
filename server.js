@@ -4,13 +4,13 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
 dotenv.config();
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("🔥 ডাটাবেজ কানেক্ট হয়েছে সফলভাবে!"))
@@ -21,6 +21,14 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true }
 });
 const User = mongoose.model('User', userSchema);
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS  
+    }
+});
 
 app.post('/register', async (req, res) => {
     try {
@@ -54,6 +62,35 @@ app.post('/login', async (req, res) => {
         res.json({ message: "Login Successful!", token });
     } catch (err) {
         res.status(500).json({ error: "Login failed" });
+    }
+});
+
+app.post('/send-payment', async (req, res) => {
+    const { name, email, course, price, method, trxid } = req.body;
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: `New Enrollment Request: ${course}`,
+        html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #a855f7;">
+                <h2 style="color: #a855f7;">নতুন কোর্স এনরোলমেন্ট রিকোয়েস্ট</h2>
+                <p><strong>ছাত্রের নাম:</strong> ${name}</p>
+                <p><strong>ইমেইল:</strong> ${email}</p>
+                <p><strong>কোর্স:</strong> ${course}</p>
+                <p><strong>টাকার পরিমাণ:</strong> ${price} BDT</p>
+                <p><strong>পেমেন্ট মেথড:</strong> ${method}</p>
+                <p><strong>Transaction ID:</strong> ${trxid}</p>
+            </div>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ success: true, message: "Request sent successfully!" });
+    } catch (error) {
+        console.error("Email Error:", error);
+        res.status(500).json({ success: false, error: "Failed to send email." });
     }
 });
 
