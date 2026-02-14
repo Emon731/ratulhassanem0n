@@ -3,103 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ratul Hassan Emon | Log In</title>
+    <title>Log In | Ratul Hassan Emon</title>
     <link rel="icon" type="image/png" href="ikn.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg-deep: #0a0f14;
-            --bg-accent: #161e26;
-            --text-bright: #ffffff;
-            --text-muted: #94a3b8;
-            --primary-glow: #10b981;
-            --secondary-glow: #3b82f6;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--bg-deep); color: var(--text-bright); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .auth-card { background: var(--bg-accent); padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border); width: 100%; max-width: 450px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); backdrop-filter: blur(16px); text-align: center; }
-        h3, h2 { margin-bottom: 0.5rem; }
-        .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; }
-        .input-group { margin-bottom: 1.25rem; }
-        input { width: 100%; padding: 14px 16px; background: var(--glass); border: 1px solid var(--border); border-radius: 12px; color: #fff; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary-glow); box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: 0.3s; margin-top: 1rem; }
-        .btn-main { background: linear-gradient(135deg, var(--primary-glow), #059669); color: #052c1e; }
-        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3); }
-        .toggle-footer { margin-top: 2rem; font-size: 0.9rem; color: var(--text-muted); }
-        .toggle-footer span { color: var(--secondary-glow); cursor: pointer; font-weight: 600; }
+        :root { --bg: #0a0f14; --accent: #10b981; }
+        body { background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .auth-card { background: #161e26; padding: 2.5rem; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #333; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 10px; color: #000; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .hidden { display: none; }
+        .toggle-link { color: #3b82f6; cursor: pointer; margin-top: 15px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
+    <div class="auth-card">
+        <div id="login-box">
+            <h2>Login</h2>
+            <input type="email" id="login-email" placeholder="Email Address">
+            <input type="password" id="login-password" placeholder="Password">
+            <button class="btn" onclick="handleAuth(false)">Login Access</button>
+            <p class="toggle-link" onclick="toggleAuth()">New User? Initialize Account</p>
+        </div>
 
-<div class="auth-card">
-    <div id="login-box">
-        <h3>Ratul Hassan Emon</h3>
-        <p class="subtitle">This is your log in page.</p>
-        <div class="input-group"><input type="email" id="login-email" placeholder="Email Address"></div>
-        <div class="input-group"><input type="password" id="login-password" placeholder="Password"></div>
-        <button class="btn btn-main" onclick="handleAuth()">Login Access</button>
-        <p class="toggle-footer">New user? <span onclick="toggleAuth()">Initialize Account</span></p>
+        <div id="register-box" class="hidden">
+            <h2>Register</h2>
+            <input type="text" id="reg-name" placeholder="Full Name">
+            <input type="email" id="reg-email" placeholder="Email Address">
+            <input type="password" id="reg-password" placeholder="Password">
+            <button class="btn" onclick="handleAuth(true)">Create Account</button>
+            <p class="toggle-link" onclick="toggleAuth()">Already Registered? Sign In</p>
+        </div>
     </div>
 
-    <div id="register-box" class="hidden">
-        <h2>Register</h2>
-        <p class="subtitle">Create your unique identifier below.</p>
-        <div class="input-group"><input type="email" id="reg-email" placeholder="Email Address"></div>
-        <div class="input-group"><input type="password" id="reg-password" placeholder="Password"></div>
-        <button class="btn btn-main" onclick="handleAuth()">Create Account</button>
-        <p class="toggle-footer">Already registered? <span onclick="toggleAuth()">Sign In</span></p>
-    </div>
-</div>
+    <script>
+        const API_URL = "https://ratulhassanem0n-1.onrender.com"; // Replace with your Render URL
 
-<script>
-    const API_URL = "https://ratulhassanem0n-1.onrender.com";
+        if (localStorage.getItem('token')) window.location.href = "dashboard.html";
 
-    // অটো-লগইন চেক
-    if (localStorage.getItem('token')) {
-        window.location.href = "dashboard.html";
-    }
-
-    function toggleAuth() {
-        document.getElementById('login-box').classList.toggle('hidden');
-        document.getElementById('register-box').classList.toggle('hidden');
-    }
-
-    async function handleAuth() {
-        const isRegistering = !document.getElementById('register-box').classList.contains('hidden');
-        const email = isRegistering ? document.getElementById('reg-email').value : document.getElementById('login-email').value;
-        const password = isRegistering ? document.getElementById('reg-password').value : document.getElementById('login-password').value;
-
-        if (!email || !password) return alert("Please fill in all fields!");
-
-        const endpoint = isRegistering ? '/register' : '/login';
-        
-        try {
-            const response = await fetch(`${API_URL}${endpoint}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                if (isRegistering) {
-                    alert("Success! Please Login.");
-                    toggleAuth();
-                } else {
-                    localStorage.setItem('token', data.token);
-                    window.location.href = "dashboard.html";
-                }
-            } else {
-                alert(data.error || "Something went wrong!");
-            }
-        } catch (err) {
-            alert("Server is starting... please wait 20 seconds and try again.");
+        function toggleAuth() {
+            document.getElementById('login-box').classList.toggle('hidden');
+            document.getElementById('register-box').classList.toggle('hidden');
         }
-    }
-</script>
+
+        async function handleAuth(isRegister) {
+            const email = isRegister ? document.getElementById('reg-email').value : document.getElementById('login-email').value;
+            const password = isRegister ? document.getElementById('reg-password').value : document.getElementById('login-password').value;
+            const name = isRegister ? document.getElementById('reg-name').value : "";
+
+            if (isRegister && !name) return alert("Please enter your name!");
+            if (!email || !password) return alert("Please fill all fields!");
+
+            const endpoint = isRegister ? '/register' : '/login';
+            try {
+                const res = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    if (isRegister) {
+                        alert("Success! Please Login.");
+                        toggleAuth();
+                    } else {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('userName', data.name); // Server থেকে আসা নাম সেভ
+                        localStorage.setItem('userEmail', email);
+                        window.location.href = "dashboard.html";
+                    }
+                } else {
+                    alert(data.error || "Error occurred!");
+                }
+            } catch (err) {
+                alert("Server is waking up... Please wait 20s and try again.");
+            }
+        }
+    </script>
 </body>
 </html>
